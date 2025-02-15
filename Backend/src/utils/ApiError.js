@@ -5,10 +5,4 @@ class ErrorHandler extends Error {
     };
 };
 
-
-
-export const errorMiddleware = (err,req,res,next) => {
-    
-}
-
 export default ErrorHandler;
