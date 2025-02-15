@@ -8,10 +8,12 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-const uploadOnCloudinary = asyncHandler(async (memoryFilePath) => {
+export const uploadOnCloudinary = async (memoryFilePath,fileName) => {
   //uplaod the file on cloudinary
   const response = await cloudinary.uploader.upload(memoryFilePath, {
-    folder: "Portfolio",
+    folder: fileName,
   });
   return response;
-});
+};
+
+
