@@ -208,9 +208,42 @@ const updateProfile = asyncHandler(async (req, res) => {
 });
 
 
+const updatePassword = asyncHandler(async (req, res) => {
+  const { currentPassword, newPassword, confirmPassword } = req.body;
+
+  if (!currentPassword || !newPassword || !confirmPassword) {
+    throw new ErrorHandler("All fields are required", 400);
+  }
+
+  if (newPassword !== confirmPassword) {
+    throw new ErrorHandler("new password and confirm password do not match", 400);
+  }
+
+  const user = await User.findById(req.userId).select("+password");
+
+  if (!user) {
+    throw new ErrorHandler("User not found", 404);
+  }
+  
+
+  const isPasswordCorrect = await user.comparePassword(currentPassword);
+
+  if (!isPasswordCorrect) {
+    throw new ErrorHandler("Current password is incorrect", 400);    
+  }
+
+  user.password = newPassword;  
+  await user.save();
+
+  res.status(200)
+  .json(new ApiResponse(200, user, "Password updated successfully"));
+
+});
 
 
 
 
 
-export { registerUser, loginUser, logoutUser, getUser, updateProfile };
+
+
+export { registerUser, loginUser, logoutUser, getUser, updateProfile, updatePassword };
