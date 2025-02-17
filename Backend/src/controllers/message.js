@@ -1,4 +1,4 @@
-import { asyncHandler } from "../utils/AsyncHandler";
+import { asyncHandler } from "../utils/AsyncHandler.js";
 import Message from "../models/message.js";
 import { ErrorHandler } from "../utils/ErrorHandler.js";
 import {ApiResponse} from "../utils/ApiResponse.js"
@@ -21,4 +21,15 @@ export const getAllMessages = asyncHandler(async (req, res) => {
     const messages = await Message.find();
     return res.status(200)
     .json(new ApiResponse(200, messages, "Messages fetched successfully"));
+});
+
+
+export const deleteMessage = asyncHandler(async (req, res) => {
+    const { id } = req.params;
+    const deletedMessage = await Message.findByIdAndDelete(id);
+    if (!deletedMessage) {
+        throw new ErrorHandler("Already deleted or not found", 404);
+    }
+    return res.status(200)
+    .json(new ApiResponse(200, deletedMessage, "Message deleted successfully"));
 });

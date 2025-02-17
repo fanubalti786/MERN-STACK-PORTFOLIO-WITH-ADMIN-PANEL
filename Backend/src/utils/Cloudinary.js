@@ -1,5 +1,4 @@
 import { v2 as cloudinary } from "cloudinary";
-import { asyncHandler } from "./AsyncHandler";
 
 // Configuration
 cloudinary.config({
@@ -14,6 +13,12 @@ export const uploadOnCloudinary = async (memoryFilePath,fileName) => {
     folder: fileName,
   });
   return response;
+};
+
+
+export const deleteOnCloudinary = async (id) => {
+  //delete the file on cloudinary
+  await cloudinary.uploader.destroy(id);
 };
 
 

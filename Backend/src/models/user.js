@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import bcrypt from "bcrypt"
 
 const userSchema = new mongoose.Schema({
     fullName: {
@@ -64,6 +65,29 @@ const userSchema = new mongoose.Schema({
     resetpasswordToken: String,
     resetpasswordExpire: Date
 });
+
+
+userSchema.pre("save", async function (next) {
+    if (!this.isModified("password"))
+    {
+        next();
+    }
+    this.password = await bcrypt.hash(this.password, 10);
+    
+});
+
+
+userSchema.methods.comparePassword = async function (password) {
+    return await bcrypt.compare(password, this.password);
+};
+
+
+userSchema.methods.generatejsonwebtoken = function () {
+    return jwt.sign({ id: this._id }, process.env.JWT_SECRET, {
+        expiresIn: process.env.JWT_EXPIRES,
+    });
+};
+
 
 
 export const User = mongoose.model("User", userSchema)
