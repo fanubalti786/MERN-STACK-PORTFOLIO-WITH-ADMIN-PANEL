@@ -240,10 +240,19 @@ const updatePassword = asyncHandler(async (req, res) => {
 
 });
 
+const getUserForPortfolio = asyncHandler(async (req, res) => {
+  const user = await User.findById("63b6e7e7e7e7e7e7e7e7e7e7");
+  return res.status(200) 
+  .json(new ApiResponse(200, user, "User fetched successfully"));
+});
 
 
 
 
 
 
-export { registerUser, loginUser, logoutUser, getUser, updateProfile, updatePassword };
+
+
+
+
+export { registerUser, loginUser, logoutUser, getUser, updateProfile, updatePassword, getUserForPortfolio };
