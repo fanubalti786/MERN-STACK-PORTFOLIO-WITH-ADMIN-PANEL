@@ -248,6 +248,48 @@ const getUserForPortfolio = asyncHandler(async (req, res) => {
 
 
 
+const forgetPassword = asyncHandler(async (req, res) => { 
+
+  const { email } = req.body;
+  if (!email) {
+    throw new ErrorHandler("Email is required", 400);
+  }
+
+  const user = await User.findOne({ email });
+
+  if (!user) {    
+    throw new ErrorHandler("User not found", 404);
+  }
+
+  const resetToken = user.getResetPasswordToken();
+
+  await user.save({ validateBeforeSave: false });
+
+  const resetPasswordUrl = `${process.env.DASHBOARD_URL}/password/reset/${resetToken}`;
+
+  const message = `You are receiving this email because you (or someone else) has requested the reset of a password. Please make a PUT request to: \n\n ${resetPasswordUrl}`;
+
+  try {
+    await sendEmail({
+      email: user.email,
+      subject: "Password reset token",
+      message,
+    });
+
+    res.status(200)
+    .json(new ApiResponse(200, user, "Email sent successfully"));
+  } catch (error) {
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpire = undefined;
+
+    await user.save({ validateBeforeSave: false });
+
+    throw new ErrorHandler("Email could not be sent", 500);
+  }
+});
+
+
+
 
 
 
