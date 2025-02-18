@@ -268,6 +268,46 @@ const forgetPassword = asyncHandler(async (req, res) => {
   }
 });
 
+
+const resetPassword = asyncHandler(async (req, res) => {
+  const { token } = req.params;
+  const { password, confirmPassword } = req.body;
+
+  if (!token || !password || !confirmPassword) {
+    throw new ErrorHandler("All fields are required", 400);
+  }
+
+  if (password !== confirmPassword) {
+    throw new ErrorHandler(
+      "new password and confirm password do not match",
+      400
+    );
+  }
+
+  const resetPasswordToken = crypto
+    .createHash("sha256")
+    .update(token)
+    .digest("hex");
+
+  const user = await User.findOne({
+    resetPasswordToken,
+    resetPasswordExpire: { $gt: Date.now() },
+  });
+
+  if (!user) {
+    throw new ErrorHandler("Invalid your token or token has expired", 400);
+  }
+
+  user.password = password;
+  user.resetPasswordToken = undefined;
+  user.resetPasswordExpire = undefined;
+
+  await user.save();
+
+  res.status(200)
+  .json(new ApiResponse(200, user, "Password updated successfully"));
+});
+
 export {
   registerUser,
   loginUser,
@@ -276,5 +316,6 @@ export {
   updateProfile,
   updatePassword,
   getUserForPortfolio,
-  forgetPassword
+  forgetPassword,
+  resetPassword
 };
