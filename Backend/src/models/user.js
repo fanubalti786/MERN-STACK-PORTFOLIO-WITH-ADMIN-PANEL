@@ -65,7 +65,7 @@ const userSchema = new mongoose.Schema({
     facebookUrl:String,
     resetpasswordToken: String,
     resetpasswordExpire: Date
-});
+}, {timestamps: true});
 
 
 userSchema.pre("save", async function (next) {
