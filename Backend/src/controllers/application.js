@@ -25,7 +25,7 @@ const addApplication = asyncHandler(async (req, res) => {
   if (!svgPath) {
     throw new ErrorHandler("Server error", 500);
   }
-  const svg = await uploadOnCloudinary(svgPath, "APPLICATIONS");
+  const svg = await uploadOnCloudinary(svgPath, "PORTFOLIO_APPLICATIONS");
   if (!svg || !svg.error) {
     throw new ErrorHandler("Server error", 500);
   }
