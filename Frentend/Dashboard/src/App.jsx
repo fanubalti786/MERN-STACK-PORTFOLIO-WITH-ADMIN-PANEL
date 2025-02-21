@@ -1,9 +1,11 @@
-
+import React from 'react'
+import { Form } from './components/ui/form'
+import { Button } from './components/ui/button'
 
 export default function App() {
   return (
     <div>
-      <h1 className="text-3xl font-bold border-2 border-black p-2">Dashboard</h1>
+      <Button>Button</Button>
     </div>
   )
 }
