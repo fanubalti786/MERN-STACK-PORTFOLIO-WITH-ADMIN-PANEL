@@ -1,6 +1,6 @@
 import express from "express";
 import { isAuthenticated } from "../middlewares/auth.js";
-import { addApplication, getAllApplications, deleteApplication } from "../controllers/softwareApplication.js";
+import { addApplication, getAllApplications, deleteApplication } from "../controllers/application.js";
 
 const router = express.Router();
 

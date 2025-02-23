@@ -1,8 +1,8 @@
-import { Project } from "../models/project";
-import { asyncHandler } from "../utils/AsyncHandler";
-import { ErrorHandler } from "../utils/ErrorHandler";
-import { uploadOnCloudinary } from "../utils/Cloudinary";
-import { deleteOnCloudinary } from "../utils/Cloudinary";
+import { Project } from "../models/project.js";
+import { asyncHandler } from "../utils/AsyncHandler.js";
+import  ErrorHandler  from "../utils/ApiError.js";
+import { uploadOnCloudinary ,deleteOnCloudinary} from "../utils/Cloudinary.js";
+
 
 
 const getAllProjects = asyncHandler(async (req, res) => {

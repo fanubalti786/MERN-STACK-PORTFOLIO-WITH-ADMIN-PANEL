@@ -1,27 +1,30 @@
 import { asyncHandler } from "../utils/AsyncHandler.js";
-import { ErrorHandler } from "../utils/ErrorHandler.js";
-import User from "../models/user.js";
-import { ApiResponse } from "../utils/ApiResponse.js";
+import ErrorHandler  from "../utils/ApiError.js";
+import {User} from "../models/user.js";
+import ApiResponse  from "../utils/ApiResponse.js";
 import { deleteOnCloudinary, uploadOnCloudinary } from "../utils/Cloudinary.js";
 import { sendEmail } from "../utils/send.Email.js";
 
-export const registerUser = asyncHandler(async (req, res) => {
-  if (!req.files || !req.files.length > 0) {
-    throw new ErrorHandler("avatar and resume both are required", 400);
+ const registerUser = asyncHandler(async (req, res) => {
+  console.log(req.files.avatar.tempFilePath)
+  console.log(req.files.Resume.tempFilePath)
+  if (!req.files || req.files.length === 0) {
+    throw new ErrorHandler("avatar and resume both are required ", 400);
   }
 
   const avatarPath = req.files.avatar.tempFilePath;
-  const resumePath = req.files.resume.tempFilePath;
+  const resumePath = req.files.Resume.tempFilePath;
 
   if (!avatarPath || !resumePath) {
-    throw new ErrorHandler("avatar and resume both are required", 400);
+    throw new ErrorHandler("avatar and resume path is required", 400);
   }
 
   const avatar = await uploadOnCloudinary(avatarPath, "AVATARS");
   const resume = await uploadOnCloudinary(resumePath, "RESUMES");
+  console.log(avatar.url, resume.url);
 
-  if (!avatar || resume.error || !resume || !avatar.error) {
-    throw new ErrorHandler("Server error", 500);
+  if (!avatar || resume.error || !resume || avatar.error) {
+    throw new ErrorHandler("Server error while uploading", 500);
   }
 
   const {
@@ -30,7 +33,7 @@ export const registerUser = asyncHandler(async (req, res) => {
     phone,
     aboutMe,
     password,
-    portfolioUrl,
+    portfolio,
     githubUrl,
     instagramUrl,
     linkedinUrl,
@@ -39,7 +42,7 @@ export const registerUser = asyncHandler(async (req, res) => {
   } = req.body;
 
   if (
-    [fullName, email, phone, aboutMe, password, portfolioUrl].some(
+    [fullName, email, phone, aboutMe, password, portfolio].some(
       (field) => field?.trim() === ""
     )
   ) {
@@ -52,7 +55,7 @@ export const registerUser = asyncHandler(async (req, res) => {
     phone,
     aboutMe,
     password,
-    portfolioUrl,
+    portfolio,
     githubUrl,
     instagramUrl,
     linkedinUrl,
@@ -64,7 +67,7 @@ export const registerUser = asyncHandler(async (req, res) => {
     },
     resume: {
       public_id: resume.public_id,
-      url: resume.url,
+      url: resume.secure_url,
     },
   });
 
@@ -79,6 +82,7 @@ export const registerUser = asyncHandler(async (req, res) => {
 
 const loginUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
+  console.log(email, password);
 
   if (!email || !password) {
     throw new ErrorHandler("All fields are required", 400);
@@ -246,6 +250,7 @@ const forgetPassword = asyncHandler(async (req, res) => {
 
   await user.save({ validateBeforeSave: false });
 
+  //http://google.com
   const resetPasswordUrl = `${process.env.DASHBOARD_URL}/password/reset/${resetToken}`;
 
   const message = `You are receiving this email because you (or someone else) has requested the reset of a password. Please make a PUT request to: \n\n ${resetPasswordUrl}`;

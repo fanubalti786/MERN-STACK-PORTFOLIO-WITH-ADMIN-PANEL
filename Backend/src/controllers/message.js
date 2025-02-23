@@ -1,7 +1,7 @@
 import { asyncHandler } from "../utils/AsyncHandler.js";
-import Message from "../models/message.js";
-import { ErrorHandler } from "../utils/ErrorHandler.js";
-import {ApiResponse} from "../utils/ApiResponse.js"
+import {Message} from "../models/message.js";
+import  ErrorHandler  from "../utils/ApiError.js";
+import ApiResponse from "../utils/ApiResponse.js"
 
 
 export const sendMessage = asyncHandler(async (req, res) => {

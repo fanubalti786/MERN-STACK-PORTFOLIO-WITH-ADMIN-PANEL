@@ -1,7 +1,7 @@
-import { asyncHandler } from "../utils/AsyncHandler";
-import { ErrorHandler } from "../utils/ErrorHandler";
-import TimeLine from "../models/timeLine.js";
-import { ApiResponse } from "../utils/ApiResponse.js";
+import { asyncHandler } from "../utils/AsyncHandler.js";
+import  ErrorHandler  from "../utils/ApiError.js";
+import {TimeLine} from "../models/timeLine.js";
+import ApiResponse  from "../utils/ApiResponse.js";
 
 const getAllTimeLines = asyncHandler(async (req, res) => {
     const timeLines = await TimeLine.find();

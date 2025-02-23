@@ -44,11 +44,11 @@ const userSchema = new mongoose.Schema({
     Resume: {
         public_id: {
             type: String,
-            required: true,
+            required: false,
         },
         url: {
             type: String,
-            required: true,
+            required: false,
         }
     },
 
@@ -79,6 +79,7 @@ userSchema.pre("save", async function (next) {
 
 
 userSchema.methods.comparePassword = async function (password) {
+    console.log("irfan")
     return await bcrypt.compare(password, this.password);
 };
 

@@ -1,8 +1,7 @@
-import { Application } from "../models/application";
-import { asyncHandler } from "../utils/AsyncHandler";
-import { ErrorHandler } from "../utils/ErrorHandler";
-import { uploadOnCloudinary } from "../utils/Cloudinary";
-import { deleteOnCloudinary } from "../utils/Cloudinary";
+import { Application } from "../models/application.js";
+import { asyncHandler } from "../utils/AsyncHandler.js";
+import  ErrorHandler  from "../utils/ApiError.js";
+import { uploadOnCloudinary,deleteOnCloudinary } from "../utils/Cloudinary.js";
 
 const getAllApplications = asyncHandler(async (req, res) => {
   const applications = await Application.find();
@@ -57,3 +56,5 @@ const deleteApplication = asyncHandler(async (req, res) => {
       )
     );
 });
+
+export {deleteApplication,addApplication,getAllApplications}

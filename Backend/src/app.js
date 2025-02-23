@@ -5,7 +5,8 @@ import cookieParser from "cookie-parser";
 import fileUpload from "express-fileupload";
 import "./database/db.js";
 const app = express();
-dotenv.config({path: "../config.env"});
+dotenv.config();
+
 app.use(cors(
     {
         origin: [process.env.PORTFOLIO_URL, process.env.DASHBOARD_URL],

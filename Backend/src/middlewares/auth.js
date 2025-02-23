@@ -1,7 +1,7 @@
-import { User } from "../models/user";
-import { asyncHandler } from "../utils/AsyncHandler";
-import { ErrorHandler } from "../utils/ErrorHandler.js";
-import jwt, { verify } from "jsonwebtoken";
+
+import { asyncHandler } from "../utils/AsyncHandler.js";
+import  ErrorHandler  from "../utils/ApiError.js";
+import jwt from "jsonwebtoken";
 
 
 
