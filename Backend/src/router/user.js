@@ -18,10 +18,10 @@ router.post("/register", registerUser);
 router.post("/login", loginUser);
 router.get("/logout", isAuthenticated, logoutUser);
 router.get("/me", isAuthenticated, getUser);
-router.post("/update/me", isAuthenticated, updateProfile);
-router.post("/update/password", isAuthenticated, updatePassword);
+router.put("/update/me", isAuthenticated, updateProfile);
+router.put("/update/password", isAuthenticated, updatePassword);
 router.get("/me/portfolio", getUserForPortfolio);
-router.post("/forget/password", forgetPassword);
-router.put("/password/reset/:token", resetPassword );
+router.post("/forget/password", isAuthenticated ,forgetPassword);
+router.put("/password/reset/:token", isAuthenticated, resetPassword );
 
 export const userRouter = router;

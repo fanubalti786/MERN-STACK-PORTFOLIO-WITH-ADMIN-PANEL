@@ -4,6 +4,8 @@ import {User} from "../models/user.js";
 import ApiResponse  from "../utils/ApiResponse.js";
 import { deleteOnCloudinary, uploadOnCloudinary } from "../utils/Cloudinary.js";
 import { sendEmail } from "../utils/send.Email.js";
+import crypto from "crypto";
+import { log } from "console";
 
  const registerUser = asyncHandler(async (req, res) => {
 
@@ -160,12 +162,13 @@ const updateProfile = asyncHandler(async (req, res) => {
     const user = await User.findById(req.userId);
     const avatarId = user.avatar.public_id;
     const avatarPath = req.files.avatar.tempFilePath;
+    console.log(avatarPath)
     if (!avatarPath) {
       throw new ErrorHandler("server error", 500);
     }
     await deleteOnCloudinary(avatarId);
     const avatar = await uploadOnCloudinary(avatarPath, "AVATARS");
-    if (!avatar || !avatar.error) {
+    if (!avatar || avatar.error) {
       throw new ErrorHandler("Server error", 500);
     }
     newUserData.avatar = {
@@ -183,7 +186,7 @@ const updateProfile = asyncHandler(async (req, res) => {
     }
     await deleteOnCloudinary(resumeId);
     const resume = await uploadOnCloudinary(resumePath, "RESUMES");
-    if (!resume || !resume.error) {
+    if (!resume || resume.error) {
       throw new ErrorHandler("Server error", 500);
     }
     newUserData.resume = {
@@ -259,6 +262,7 @@ const forgetPassword = asyncHandler(async (req, res) => {
   const resetToken = user.getResetPasswordToken();
 
   await user.save({ validateBeforeSave: false });
+  
 
   //http://google.com
   const resetPasswordUrl = `${process.env.DASHBOARD_URL}/password/reset/${resetToken}`;
@@ -299,14 +303,20 @@ const resetPassword = asyncHandler(async (req, res) => {
     );
   }
 
-  const resetPasswordToken = crypto
+  
+  const resetpasswordToken = crypto
     .createHash("sha256")
     .update(token)
     .digest("hex");
 
+
+
+    console.log(resetpasswordToken);
+
+
   const user = await User.findOne({
-    resetPasswordToken,
-    resetPasswordExpire: { $gt: Date.now() },
+    resetpasswordToken,
+    resetpasswordExpire: { $gt: Date.now() },
   });
 
   if (!user) {
