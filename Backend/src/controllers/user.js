@@ -6,14 +6,19 @@ import { deleteOnCloudinary, uploadOnCloudinary } from "../utils/Cloudinary.js";
 import { sendEmail } from "../utils/send.Email.js";
 
  const registerUser = asyncHandler(async (req, res) => {
-  console.log(req.files.avatar.tempFilePath)
-  console.log(req.files.Resume.tempFilePath)
-  if (!req.files || req.files.length === 0) {
+
+  const existedUser = await User.findOne({email: req.body.email});
+  if(existedUser){
+    throw new ErrorHandler("User already exists", 400)
+  }
+
+
+  if (!req.files.avatar || !req.files.resume) {
     throw new ErrorHandler("avatar and resume both are required ", 400);
   }
 
   const avatarPath = req.files.avatar.tempFilePath;
-  const resumePath = req.files.Resume.tempFilePath;
+  const resumePath = req.files.resume.tempFilePath;
 
   if (!avatarPath || !resumePath) {
     throw new ErrorHandler("avatar and resume path is required", 400);
@@ -75,30 +80,35 @@ import { sendEmail } from "../utils/send.Email.js";
     throw new ErrorHandler("Server error", 500);
   }
 
+  const newUser = await User.findById(user._id).select("-password");
+
   return res
     .status(201)
-    .json(new ApiResponse(201, user, "User registered successfully"));
+    .json(new ApiResponse(201, newUser, "User registered successfully"));
 });
 
 const loginUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
-  console.log(email, password);
 
   if (!email || !password) {
     throw new ErrorHandler("All fields are required", 400);
   }
 
-  const user = await User.findOne({ email });
+  const userExist = await User.findOne({ email });
 
-  if (!user) {
-    throw new ErrorHandler("email or password incorrect");
+  if (!userExist) {
+    throw new ErrorHandler("password or email incorrect", 404);
   }
 
-  const isPasswordCorrect = await user.comparePassword(password);
+  const isPasswordCorrect = await userExist.comparePassword(password);
 
   if (!isPasswordCorrect) {
     throw new ErrorHandler("email or password incorrect");
   }
+
+  const token = userExist.generatejsonwebtoken();
+
+  const user = await User.findById(userExist._id).select("-password");
 
   const options = {
     httpOnly: true,
@@ -114,7 +124,7 @@ const loginUser = asyncHandler(async (req, res) => {
 });
 
 const logoutUser = asyncHandler(async (req, res) => {
-  options = {
+  const options = {
     httpOnly: true,
     secure: true,
   };
@@ -228,7 +238,7 @@ const updatePassword = asyncHandler(async (req, res) => {
 });
 
 const getUserForPortfolio = asyncHandler(async (req, res) => {
-  const user = await User.findById("random");
+  const user = await User.findById("67bbfcf6f42e50793c938257");
   return res
     .status(200)
     .json(new ApiResponse(200, user, "User fetched successfully"));

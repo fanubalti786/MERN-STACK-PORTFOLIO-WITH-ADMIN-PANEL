@@ -1,6 +1,9 @@
+import dotenv from "dotenv";
 import mongoose from "mongoose";
 import bcrypt from "bcrypt";
 import crypto from "crypto";
+import jwt from "jsonwebtoken";
+dotenv.config();
 
 const userSchema = new mongoose.Schema({
     fullName: {
@@ -27,7 +30,17 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: [true, "password is required"],
         minLength: [8, "Password must be at least 8 characters long"],
-        select: false
+    },
+
+    resume: {
+        public_id: {
+            type: String,
+            required: true,
+        },
+        url: {
+            type: String,
+            required: true,
+        }
     },
 
     avatar: {
@@ -41,16 +54,7 @@ const userSchema = new mongoose.Schema({
         },
     },
 
-    Resume: {
-        public_id: {
-            type: String,
-            required: false,
-        },
-        url: {
-            type: String,
-            required: false,
-        }
-    },
+    
 
     portfolio: {
         
@@ -79,13 +83,14 @@ userSchema.pre("save", async function (next) {
 
 
 userSchema.methods.comparePassword = async function (password) {
-    console.log("irfan")
+    console.log(this.password);
     return await bcrypt.compare(password, this.password);
 };
 
 
 userSchema.methods.generatejsonwebtoken = function () {
-    return jwt.sign({ id: this._id }, process.env.JWT_SECRET, {
+    console.log(process.env.JWT_SECRET_KEY);
+    return jwt.sign({ id: this._id }, process.env.JWT_SECRET_KEY, {
         expiresIn: process.env.JWT_EXPIRES,
     });
 };
