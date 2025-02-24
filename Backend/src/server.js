@@ -11,6 +11,7 @@ import { userRouter } from "./router/user.js";
 import { timeLineRouter } from "./router/timeLine.js";
 import { applicationRouter } from "./router/application.js";
 import { projectRouter } from "./router/project.js";
+import { skillRouter } from "./router/skill.js";
 
 import "./database/db.js";
 
@@ -35,6 +36,7 @@ app.use("/api/v1/user", userRouter);
 app.use("/api/v1/timeLine", timeLineRouter);
 app.use("/api/v1/application", applicationRouter);
 app.use("/api/v1/project", projectRouter);
+app.use("/api/v1/skill", skillRouter);
 app.use(errorMiddleware);
 
 // server listen

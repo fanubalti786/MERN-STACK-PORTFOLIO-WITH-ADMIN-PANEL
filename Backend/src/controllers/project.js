@@ -2,6 +2,7 @@ import { Project } from "../models/project.js";
 import { asyncHandler } from "../utils/AsyncHandler.js";
 import  ErrorHandler  from "../utils/ApiError.js";
 import { uploadOnCloudinary ,deleteOnCloudinary} from "../utils/Cloudinary.js";
+import ApiResponse from "../utils/ApiResponse.js";
 
 
 
@@ -9,7 +10,7 @@ const getAllProjects = asyncHandler(async (req, res) => {
     const projects = await Project.find();
     return res
         .status(200)
-        .json(new ErrorHandler(200, projects, "Projects fetched successfully"));
+        .json(new ApiResponse(200, projects, "Projects fetched successfully"));
 });
 
 const getSingleProject = asyncHandler(async (req, res) => {
@@ -20,13 +21,13 @@ const getSingleProject = asyncHandler(async (req, res) => {
     }
     return res
         .status(200)
-        .json(new ErrorHandler(200, project, "Project fetched successfully"));
+        .json(new ApiResponse(200, project, "Project fetched successfully"));
 });
 
 const addProject = asyncHandler(async (req, res) => {
-    const { title, description, image, gitRepoLink, projectLink, technologies, stack, deployed } = req.body;
+    const { title, description, gitRepoLink, projectLink, technologies, stack, deployed } = req.body;
 
-    if (!title || !description || !image || !gitRepoLink || !projectLink || !technologies || !stack || !deployed) {
+    if (!title || !description || !technologies || !stack || !deployed) {
         throw new ErrorHandler("All fields are required", 400);
     }
 
@@ -40,7 +41,7 @@ const addProject = asyncHandler(async (req, res) => {
     }
 
     const Banner = await uploadOnCloudinary(BannerPath, "PORTFOLIO_PROJECTS_BANNERS");
-    if (!Banner || !Banner.error) {
+    if (!Banner || Banner.error) {
         throw new ErrorHandler("Cloudinary error", 500);
     }
 
@@ -61,7 +62,7 @@ const addProject = asyncHandler(async (req, res) => {
 
     return res
         .status(201)
-        .json(new ErrorHandler(201, newProject, "Project added successfully"));
+        .json(new ApiResponse(201, newProject, "Project added successfully"));
 });
 
 const deleteProject = asyncHandler(async (req, res) => {
@@ -73,7 +74,7 @@ const deleteProject = asyncHandler(async (req, res) => {
     await deleteOnCloudinary(deletedProject.projectBanner.public_id);
     return res
         .status(200)
-        .json(new ErrorHandler(200, deletedProject, "Project deleted successfully"));
+        .json(new ApiResponse(200, deletedProject, "Project deleted successfully"));
 }); 
 
 const updateProject = asyncHandler(async (req, res) => {
@@ -84,22 +85,25 @@ const updateProject = asyncHandler(async (req, res) => {
         throw new ErrorHandler("Project not found", 404);
     }
 
+    console.log("irfan")
+
    
 
     const newData = {
         title: req.body.title,
         description: req.body.description,
-        image: req.body.image,
         gitRepoLink: req.body.gitRepoLink,
         projectLink: req.body.projectLink,
         technologies: req.body.technologies,
         stack: req.body.stack,
         deployed: req.body.deployed
     };
+    console.log(req.body.title);
 
-    if(!title || !description || !image || !gitRepoLink || !projectLink || !technologies || !stack || !deployed) {
+    if(!req.body.title || !req.body.description || !req.body.technologies || !req.body.stack || !req.body.deployed) {
         throw new ErrorHandler("All fields are required", 400);
     }
+    console.log("irfan")
 
     if (req.files && req.files.projectBanner) {
         const projectBannerId = project.projectBanner.public_id;
@@ -108,7 +112,7 @@ const updateProject = asyncHandler(async (req, res) => {
             throw new ErrorHandler("server error", 500);
         }
         const projectBanner = await uploadOnCloudinary(projectBannerPath, "PORTFOLIO_PROJECTS_BANNERS");
-        if (!projectBanner || !projectBanner.error) {
+        if (!projectBanner || projectBanner.error) {
             throw new ErrorHandler("Server error", 500);
         }
         await deleteOnCloudinary(projectBannerId);
@@ -131,7 +135,7 @@ const updateProject = asyncHandler(async (req, res) => {
 
     return res
         .status(200)
-        .json(new ErrorHandler(200, updatedProject, "Project updated successfully"));
+        .json(new ApiResponse(200, updatedProject, "Project updated successfully"));
 });
 
 export {

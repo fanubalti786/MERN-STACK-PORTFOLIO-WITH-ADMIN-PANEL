@@ -7,7 +7,7 @@ import { deleteMessage } from "../controllers/message.js";
 const router = express.Router();    
 
 router.post("/send", sendMessage, errorMiddleware);
-router.get("/get", getAllMessages, errorMiddleware);
+router.get("/getAll", getAllMessages, errorMiddleware);
 router.delete("/delete/:id", deleteMessage, errorMiddleware);
 
 

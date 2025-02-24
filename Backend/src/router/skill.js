@@ -1,6 +1,6 @@
 import express from "express";
 import { isAuthenticated } from "../middlewares/auth.js";
-import { addSkill, getAllSkills, deleteSkill } from "../controllers/skill.js";
+import { addSkill, getAllSkills, deleteSkill, updateSkill } from "../controllers/skill.js";
 
 const router = express.Router();
 

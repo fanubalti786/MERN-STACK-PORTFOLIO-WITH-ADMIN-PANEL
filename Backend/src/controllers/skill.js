@@ -1,14 +1,15 @@
-import { Skill } from "../models/skill";
-import { asyncHandler } from "../utils/AsyncHandler";
-import { ErrorHandler } from "../utils/ErrorHandler";
-import { uploadOnCloudinary } from "../utils/Cloudinary";
-import { deleteOnCloudinary } from "../utils/Cloudinary";
+import { Skill } from "../models/skill.js";
+import { asyncHandler } from "../utils/AsyncHandler.js";
+import ErrorHandler from "../utils/ApiError.js";
+import ApiResponse from "../utils/ApiResponse.js";
+import { uploadOnCloudinary,deleteOnCloudinary } from "../utils/Cloudinary.js";
 
 const getAllSkills = asyncHandler(async (req, res) => {
   const skills = await Skill.find();
+  console.log(skills);
   return res
     .status(200)
-    .json(new ErrorHandler(200, skills, "Skills fetched successfully"));
+    .json(new ApiResponse(200, skills, "Skills fetched successfully"));
 });
 
 const addSkill = asyncHandler(async (req, res) => {
@@ -28,7 +29,7 @@ const addSkill = asyncHandler(async (req, res) => {
   }
 
   const svg = await uploadOnCloudinary(svgPath, "PORTFOLIO_SKILLS_SVGS");
-  if (!svg || !svg.error) {
+  if (!svg || svg.error) {
     throw new ErrorHandler("Server error", 500);
   }
 
@@ -43,7 +44,7 @@ const addSkill = asyncHandler(async (req, res) => {
 
   return res
     .status(201)
-    .json(new ErrorHandler(201, skill, "Skill added successfully"));
+    .json(new ApiResponse(201, skill, "Skill added successfully"));
 });
 
 const deleteSkill = asyncHandler(async (req, res) => {
@@ -55,7 +56,7 @@ const deleteSkill = asyncHandler(async (req, res) => {
   await deleteOnCloudinary(deletedSkill.svg.public_id);
   return res
     .status(200)
-    .json(new ErrorHandler(200, deletedSkill, "Skill deleted successfully"));
+    .json(new ApiResponse(200, deletedSkill, "Skill deleted successfully"));
 });
 
 const updateSkill = asyncHandler(async (req, res) => {
@@ -82,7 +83,7 @@ const updateSkill = asyncHandler(async (req, res) => {
   }
   return res
     .status(200)
-    .json(new ErrorHandler(200, updatedSkill, "Skill updated successfully"));
+    .json(new ApiResponse(200, updatedSkill, "Skill updated successfully"));
 });
 
 export { getAllSkills, addSkill, deleteSkill, updateSkill };

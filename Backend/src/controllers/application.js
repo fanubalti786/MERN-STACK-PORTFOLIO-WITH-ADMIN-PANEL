@@ -1,10 +1,12 @@
-import { Application } from "../models/application.js";
+import {Application} from "../models/application.js";
 import { asyncHandler } from "../utils/AsyncHandler.js";
 import  ErrorHandler  from "../utils/ApiError.js";
+import ApiResponse  from "../utils/ApiResponse.js";
 import { uploadOnCloudinary,deleteOnCloudinary } from "../utils/Cloudinary.js";
 
 const getAllApplications = asyncHandler(async (req, res) => {
   const applications = await Application.find();
+  console.log(applications);
   return res
     .status(200)
     .json(
@@ -25,7 +27,7 @@ const addApplication = asyncHandler(async (req, res) => {
     throw new ErrorHandler("Server error", 500);
   }
   const svg = await uploadOnCloudinary(svgPath, "PORTFOLIO_APPLICATIONS");
-  if (!svg || !svg.error) {
+  if (!svg || svg.error) {
     throw new ErrorHandler("Server error", 500);
   }
   const newApplication = await Application.create({
