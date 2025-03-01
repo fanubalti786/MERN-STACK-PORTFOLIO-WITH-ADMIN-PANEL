@@ -1,6 +1,5 @@
 import { handleError, handleMessage } from "@/utils/toastify";
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { application } from "express";
 
 export const fetchUserPortfolio = createAsyncThunk(
   "fetchUserPortfolio",
