@@ -13,11 +13,15 @@ import { log } from "console";
   if(existedUser){
     throw new ErrorHandler("User already exists", 400)
   }
+  console.log("its true");
+  console.log(req.files);
 
-
-  if (!req.files.avatar || !req.files.resume) {
+  if (!req.files || !req.files.avatar || !req.files.resume) {
+    console.log("don't recive any file")
     throw new ErrorHandler("avatar and resume both are required ", 400);
   }
+
+
 
   const avatarPath = req.files.avatar.tempFilePath;
   const resumePath = req.files.resume.tempFilePath;
@@ -55,6 +59,7 @@ import { log } from "console";
   ) {
     throw new ApiError(400, "All fields are required");
   }
+
 
   const user = await User.create({
     fullName,

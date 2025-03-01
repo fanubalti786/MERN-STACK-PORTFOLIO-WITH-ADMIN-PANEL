@@ -1,4 +1,6 @@
 import dotenv from "dotenv";
+// import path from "path";
+// import { fileURLToPath } from "url";
 dotenv.config();
 
 import express from "express";
@@ -20,14 +22,21 @@ const app = express();
 
 app.use(cors());
 
+// const __filename = fileURLToPath(import.meta.url);
+// const __dirname = path.dirname(__filename);
+
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 app.use(cookieParser());
 app.use(express.static("public"));
+// app.use(fileUpload({
+//     useTempFiles: true,
+//     tempFileDir: path.join(__dirname, "tmp"),
+// }));
 app.use(fileUpload({
     useTempFiles: true,
     tempFileDir: "/tmp/"
-}));
+}))
 
 
 
