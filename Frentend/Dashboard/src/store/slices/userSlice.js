@@ -1,9 +1,9 @@
 import { handleError, handleMessage } from "@/utils/toastify";
 import { createSlice } from "@reduxjs/toolkit";
 import { createAsyncThunk } from "@reduxjs/toolkit";
-// import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
-// const navigate = useNavigate();
+const navigate = useNavigate();
 
 export const userRegister = createAsyncThunk(
   "userRegister",
@@ -13,7 +13,7 @@ export const userRegister = createAsyncThunk(
         "http://localhost:4000/api/v1/user/register",
         {
           method: "POST",
-          // headers: { "Content-Type": "application/json" },
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify(formData),
         }
       );
@@ -21,18 +21,21 @@ export const userRegister = createAsyncThunk(
       const data = await response.json();
       const { success, message, statusCode } = data;
 
-      // if (success) {
-      //   handleMessage(message);
-      //   setTimeout(() => {
-      //     navigate("/Login");
-      //   }, 1000);
-      // } else {
-      //   handleError(message);
-      // }
+      if (success) {
+        handleMessage(message);
+        // setTimeout(() => {
+        //   navigate("/Login");
+        // }, 1000);
+      } else {
+        handleError(message);
+        setTimeout(() => {
+          navigate("/Login");
+        }, 1000);
+      }
 
       // handleMessage(message)
 
-      console.log(data.success)
+      console.log(data.success, data.message)
     } catch (error) {
       // handleError(error.message);
       console.log(error.message)

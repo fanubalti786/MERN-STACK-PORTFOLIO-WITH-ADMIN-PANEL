@@ -1,6 +1,7 @@
 import { userRegister } from "@/store/slices/userSlice";
 import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import { ToastContainer } from "react-toastify";
 
 export default function SignUp() {
 
@@ -67,6 +68,7 @@ const dispatch = useDispatch();
   };
 
   return (
+    <div>
     <div className="max-w-lg mx-auto mt-10 bg-white p-6 rounded-lg shadow-lg">
       <h2 className="text-2xl font-bold text-center mb-5">User Registration</h2>
       <form onSubmit={handleSubmit} className="space-y-4">
@@ -79,7 +81,7 @@ const dispatch = useDispatch();
             value={formData.fullName}
             onChange={handleChange}
             className="w-full p-2 border rounded-md"
-            required
+            
           />
         </div>
 
@@ -162,6 +164,9 @@ const dispatch = useDispatch();
           Register
         </button>
       </form>
+      
+    </div>
+    <ToastContainer/>
     </div>
   );
 }
